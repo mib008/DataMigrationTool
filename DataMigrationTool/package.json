@@ -1,0 +1,17 @@
+{
+  "name": "DataMigrationTool",
+  "version": "0.0.0",
+  "description": "DataMigrationTool",
+  "main": "app.js",
+  "author": {
+    "name": "mib008",
+    "email": ""
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "log4js": "^0.6.33",
+    "mysql": "^2.10.2",
+    "q": "^1.4.1",
+    "sql-generator": "0.0.7"
+  }
+}

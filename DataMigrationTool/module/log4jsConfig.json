@@ -1,0 +1,27 @@
+{
+    "appenders": [
+        {
+            "type": "file",
+            "filename": "log/task_resolved.log",
+            "maxLogSize": 20480,
+            "backups": 3,
+            "category": "task_resolved"
+        },
+        {
+            "type": "file",
+            "filename": "log/task_rejected.log",
+            "maxLogSize": 20480,
+            "backups": 3,
+            "category": "task_rejected"
+        },
+
+        {
+            "type": "console",
+            "category": "task_resolved"
+        },
+        {
+            "type": "console",
+            "category": "task_rejected"
+        }
+    ]
+}

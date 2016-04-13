@@ -3,3 +3,8 @@
 ################################################################################
 
 /DataMigrationTool/log
+/DataMigrationTool/module/config.json
+/DataMigrationTool/node_modules
+/DataMigrationTool/.ntvs_analysis.dat
+/json1.json
+/json2.json
