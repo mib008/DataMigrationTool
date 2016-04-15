@@ -69,7 +69,7 @@ module.exports = function () {
     
     
     return {
-        getDependencyPromiseResolver: getDependencyPromiseResolver,
+        getDependencyPromiseResolver: getDependencyPromiseResolver
     };
 }();
 

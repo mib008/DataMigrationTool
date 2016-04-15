@@ -16,21 +16,22 @@ module.exports = function () {
           taskUtil = require("../module/utility/taskUtility");
     
     var taskName = "userList",
-        dependencyTask = path.join(__dirname, "depTask/authPassword");
+        dependencyTask = path.join(__dirname, "depTask/crmUserDesc");
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
     
     function task(resolve, reject) {
-        var option = url.parse(config.crmApi.userList.url);
-        option.method = config.crmApi.userList.method;
+        var columns = global.idMap[config.belongName.user].fields.map(function (item) { return item.propertyname });
+        
+        var data = {
+            q: config.crmApi.crmUserList.sql.replace("*", columns.join(", "))
+        };
+
+        var option = url.parse(config.crmApi.soqlQuery.url + "?" + querystring.stringify(data));
+        option.method = config.crmApi.soqlQuery.method;
         option.headers = {
             Authorization: global.authInfo.access_token
         };
-        
-        var data = querystring.stringify({
-            start : 0,
-            count : 100
-        });
         
         var req = https.request(option, function (res) {
             var content = "";
@@ -46,11 +47,8 @@ module.exports = function () {
                 global.crmUserList = content.records;
                 
                 resolve(content);
-                // console.log(content);
             });
         });
-        
-        req.write(data);
         
         req.end();
         

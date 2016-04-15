@@ -3,6 +3,7 @@ const Q             = require('q'),
       util          = require('util'),
       path          = require("path"),
       querystring   = require('querystring'),
+      SqlGenerator  = require('sql-generator'),
       url           = require('url'),
       https         = require('https');
 // ReSharper restore Es6Feature
@@ -15,22 +16,23 @@ module.exports = function () {
     const config = require("../module/configs").httpClient,
           taskUtil = require("../module/utility/taskUtility");
     
-    var taskName = "userList",
-        dependencyTask = path.join(__dirname, "depTask/authPassword");
+    var taskName = "crmCompanyList",
+        dependencyTask = path.join(__dirname, "depTask/crmCompanyDesc");
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
-    
+   
     function task(resolve, reject) {
-        var option = url.parse(config.crmApi.userList.url);
-        option.method = config.crmApi.userList.method;
+        var columns = global.idMap[config.belongName.company].fields.map(function(item) { return item.propertyname });
+
+        var data = {
+            q: config.crmApi.crmCompanyList.sql.replace("*", columns.join(", "))
+        };
+
+        var option = url.parse(config.crmApi.soqlQuery.url + "?" + querystring.stringify(data));
+        option.method = config.crmApi.soqlQuery.method;
         option.headers = {
             Authorization: global.authInfo.access_token
         };
-        
-        var data = querystring.stringify({
-            start : 0,
-            count : 100
-        });
         
         var req = https.request(option, function (res) {
             var content = "";
@@ -43,14 +45,14 @@ module.exports = function () {
 
                 }
 
-                global.crmUserList = content.records;
+                global.crmCompanyList = content.records;
                 
                 resolve(content);
                 // console.log(content);
             });
         });
         
-        req.write(data);
+        // req.write(JSON.stringify(data));
         
         req.end();
         
@@ -61,7 +63,7 @@ module.exports = function () {
         });
     }
     
-    var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.authInfo, dependencyTask, taskName, task));
+    var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
 
     return promise;
 }();

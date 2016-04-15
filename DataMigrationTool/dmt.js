@@ -64,7 +64,7 @@ taskList.forEach(function (item, index) {
     if (index === taskList.length - 1) {
         temp.then(function (message) {
             if (util.isString(message)) console.log(message.toString().green);
-            else if (util.isObject(message)) console.log(JSON.stringify(message));
+            else if (util.isObject(message)) // console.log(JSON.stringify(message));
             
             console.log("Task: %s executed.".green, lastTaskName);
                     // process.exit(0);

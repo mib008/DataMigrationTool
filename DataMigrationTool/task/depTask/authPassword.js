@@ -27,13 +27,16 @@ module.exports = function () {
         // username=%s&
         // password=%s
         
-        var option = url.parse(util.format(config.authApi.authPassword.url,
-            "password",
-            config.clientId,
-            config.clientSecret,
-            config.redirectUri,
-            config.userAccount,
-            config.userPassword + config.userToken));
+        var query = {
+            "grant_type": "password",
+            "client_id": config.clientId,
+            "client_secret": config.clientSecret,
+            "redirect_uri": config.redirectUri,
+            "username": config.userAccount,
+            "password": config.userPassword + config.userToken
+        };
+        
+        var option = url.parse(config.authApi.authPassword.url + "?" + querystring.stringify(query));
         option.method = config.authApi.authPassword.method;
         
         //var option = url.parse(config.authApi.authPassword.url);
@@ -47,37 +50,37 @@ module.exports = function () {
         //option.method = config.authApi.authPassword.method;
         //option.search = "?" + option.query;
         
-        var req = https.request(option, (res)=> {
+        var req = https.request(option, function (res) {
             //console.log('statusCode: ', res.statusCode);
             //console.log('headers: ', res.headers);
             
             var content = "";
-            res.on('data', (chunk) => {
+            res.on('data', function (chunk) {
                 content += chunk;
-            }).addListener('end', () => {
-        // console.log("content: %s", content);
+            }).addListener('end', function () {
+                // console.log("content: %s", content);
+                
+                content = JSON.parse(content);
+                
+                if (content.error) {
+                    console.error("authPassword rejected.");
+                    reject(content);
+                } else {
+                    global.authInfo = content;
+                    console.log("authPassword resolved.");
+                    resolve(content);
+                }
+            });
+        });
         
-        content = JSON.parse(content);
+        req.end();
         
-        if (content.error) {
+        req.on('error', (e) => {
+            console.error(e);
             console.error("authPassword rejected.");
-            reject(content);
-        } else {
-            global.authInfo = content;
-            console.log("authPassword resolved.");
-            resolve(content);
-        }
-    });
-});
-
-req.end();
-
-req.on('error', (e) => {
-console.error(e);
-console.error("authPassword rejected.");
-
-reject(e);
-});
+            
+            reject(e);
+        });
 });
 
 return promise;

@@ -8,20 +8,21 @@ const Q     = require('q'),
 
 module.exports = function () {
     'use strict';
-    
+
     // ReSharper disable Es6Feature
     // ReSharper disable UndeclaredGlobalVariableUsing
     const config = require("../../module/configs").httpClient,
           taskUtil = require("../../module/utility/taskUtility");
     
-    var taskName = "belongIdList",
-        dependencyTask = path.join(__dirname, "authPassword");
+    var taskName = "crmCompanyDesc",
+        dependencyTask = path.join(__dirname, "belongIdList");
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
     
     function task(resolve, reject) {
-        var option = url.parse(config.crmApi.belongIdList.url);
-        option.method = config.crmApi.belongIdList.method;
+
+        var option = url.parse(config.crmApi.crmCompanyDesc.url);
+        option.method = config.crmApi.crmCompanyDesc.method;
         option.headers = {
             Authorization: global.authInfo.access_token
         };
@@ -37,21 +38,22 @@ module.exports = function () {
 
                 }
                 
-                // 获取并存储BelongId
-                global.idMap = function () {
-                    if (content && content.records && content.records instanceof Array && content.records.length > 0) {
-                        var belongIdMap = {};
-                        
-                        content.records.forEach(x => {
-                            belongIdMap[x.name] = { belongId : x.belongId }
-                        });
-                        
-                        return belongIdMap;
-                    } else {
-                        return undefined;
-                    }
-                }();
+                if (content.error_code) {
+                    reject(content);
+                }
                 
+                if (!global.idMap[config.belongName.company]) {
+                    reject("No definition for: " + config.belongName.company);
+                    return;
+                }
+
+                if (!content.fields || !(content.fields instanceof Array)) {
+                    reject("Get fields failed.");
+                    return;
+                }
+
+                global.idMap[config.belongName.company].fields = content.fields;
+
                 resolve(content);
             });
         });
@@ -65,7 +67,7 @@ module.exports = function () {
         });
     };
     
-    var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.authInfo, dependencyTask, taskName, task));
+    var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
     
     return promise;
 }();
