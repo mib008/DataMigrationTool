@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>DataMigrationTool</Name>
     <RootNamespace>DataMigrationTool</RootNamespace>
-    <ScriptArguments>crmUserCreate</ScriptArguments>
+    <ScriptArguments>crmCompanyPKList</ScriptArguments>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -40,6 +40,9 @@
     <Compile Include="module\utility\taskUtility.js" />
     <Compile Include="module\utility\commonUtility.js" />
     <Compile Include="module\utility\stringUtility.js" />
+    <Compile Include="task\crmCompanyCreate.js" />
+    <Compile Include="task\crmCompanyPKListSync.js" />
+    <Compile Include="task\crmUserCreateMuti.js" />
     <Compile Include="task\depTask\belongIdList.js" />
     <Compile Include="task\depTask\crmCompanyDesc.js" />
     <Compile Include="task\depTask\crmDepartDesc.js" />
@@ -48,16 +51,25 @@
     <Compile Include="task\crmUserCreate.js" />
     <Compile Include="task\createUser.js" />
     <Compile Include="task\default.js" />
+    <Compile Include="task\syncCompanyDB2CRM.js" />
+    <Compile Include="task\syncDB2CRM.js" />
+    <Compile Include="task\testGetAccountData.js" />
     <Compile Include="task\userInfo.js" />
     <Compile Include="task\crmCompanyList.js" />
     <Compile Include="task\crmUserList.js" />
+    <Compile Include="task\crmCompanyPKList.js" />
     <Compile Include="task\userList.js" />
     <Compile Include="task\depTask\authPassword.js" />
     <Compile Include="task\task1.js" />
     <Compile Include="task\depTask\authCode.js" />
-    <Compile Include="task\testGetAccountData.js" />
+    <Compile Include="task\getCompanyFromDB.js" />
     <Compile Include="task\task2.js" />
     <Compile Include="task\utilTask\crmFindCompany.js" />
+    <Compile Include="task\utilTask\crmAddUser.js" />
+    <Compile Include="task\utilTask\crmAddCompany.js" />
+    <Compile Include="task\utilTask\databaseListCompany.js" />
+    <Compile Include="task\utilTask\crmListCompanyPK.js" />
+    <Compile Include="task\utilTask\listUser.js" />
     <Content Include="module\config.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />

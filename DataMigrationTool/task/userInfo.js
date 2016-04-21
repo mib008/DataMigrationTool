@@ -58,27 +58,17 @@ module.exports = function () {
     };
     
     var promise = Q.promise(function (resolve, reject) {
-        
-        // ReSharper disable Es6Feature
-        // ReSharper disable UndeclaredGlobalVariableUsing
-        const log = require('../module/logProvider');
-        // ReSharper restore UndeclaredGlobalVariableUsing
-        // ReSharper restore Es6Feature
-        
         var doTask = function () {
             task(function (msg) {
                 if (msg.error_code) {
                     console.log("userInfo rejected.");
-                    log.rejectedLogger.warn(util.format("userInfo: %s", JSON.stringify(msg)));
                     reject(msg);
                 } else {
                     console.error("userInfo resolved.");
-                    log.resolvedLogger.info(util.format("userInfo: %s", JSON.stringify(msg)));
                     resolve(msg);
                 } 
             }, function (msg) {
                 console.log("userInfo rejected.");
-                log.rejectedLogger.warn(util.format("userInfo: %s", JSON.stringify(msg)));
                 reject(msg);
             });
         };

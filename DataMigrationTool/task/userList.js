@@ -15,53 +15,43 @@ module.exports = function () {
     const config = require("../module/configs").httpClient,
           taskUtil = require("../module/utility/taskUtility");
     
-    var taskName = "userList",
-        dependencyTask = path.join(__dirname, "depTask/authPassword");
+    const userList = require(path.join(__dirname, "utilTask/listUser"));
+    
+    const taskName = "userList",
+          pageSize = 30;
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
     
-    function task(resolve, reject) {
-        var option = url.parse(config.crmApi.userList.url);
-        option.method = config.crmApi.userList.method;
-        option.headers = {
-            Authorization: global.authInfo.access_token
+    // ReSharper disable UndeclaredGlobalVariableUsing
+    return new Promise(function (resolve, reject) {
+        var position = 0;
+        var totalSize = pageSize;
+        
+        var rejectFunc = function (res) {
+            console.error("%s: Get user list failed. position: %d, totalSize: %d".red, taskName, position, totalSize);
+            console.error("%s".red, JSON.stringify(res));
+            reject(res);
         };
         
-        var data = querystring.stringify({
-            start : 0,
-            count : 100
-        });
-        
-        var req = https.request(option, function (res) {
-            var content = "";
-            res.on('data', function (chunk) {
-                content += chunk;
-            }).addListener('end', function () {
-                try {
-                    content = JSON.parse(content);
-                } catch (e) {
+        userList.getUser(position, pageSize).then(function (res) {
+            totalSize = res.totalSize;
 
-                }
+            if (global.crmUserList.length === totalSize) {
+                resolve();
+                return;
+            }
 
-                global.crmUserList = content.records;
-                
-                resolve(content);
-                // console.log(content);
-            });
-        });
-        
-        req.write(data);
-        
-        req.end();
-        
-        req.on('error', function (e) {
-            console.error(e);
-            
-            reject(e);
-        });
-    }
-    
-    var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.authInfo, dependencyTask, taskName, task));
+            while (position + pageSize <= totalSize) {
+                position += res.count;
+                userList.getUser(position, pageSize).then(function() {
+                    console.info("Size of global.crmUserList: %d", global.crmUserList.length);
+                    if (global.crmUserList.length === totalSize) {
+                        resolve();
+                    }
+                }, rejectFunc);
+            };
 
-    return promise;
+        }, rejectFunc);
+    });
+    // ReSharper restore UndeclaredGlobalVariableUsing
 }();

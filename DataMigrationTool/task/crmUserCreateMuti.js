@@ -22,7 +22,7 @@ module.exports = function () {
     // ReSharper restore Es6Feature
     
     var testUser1 = {
-        name: "testUser1",
+        name: "testUser",
         ownerId: "480603",
         dimDepart: "266930",
         customItem1: "TestCompany",
@@ -32,7 +32,7 @@ module.exports = function () {
         updatedBy: "",
         updatedAt: ""
     };
-    
+
     function getTargetData(user) {
         var target = {};
         

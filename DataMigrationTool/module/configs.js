@@ -25,10 +25,19 @@ module.exports = function () {
         return config.httpClient;
     }();
     
+    var sql = function () {
+        return {
+            getCompanyFromDB: config.database.getCompanyFromDB,
+            getUserFromDB: config.database.getUserFromDB
+        };
+    }();
+    
     return {
         dbConfig: dbConfig,
         dbPoolConfig: dbPoolConfig,
-        httpClient: httpClient
+        httpClient: httpClient,
+        
+        sql: sql
     };
 }();
 

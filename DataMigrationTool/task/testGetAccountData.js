@@ -18,9 +18,9 @@ module.exports = function () {
         var sqlgen = new SqlGenerator();
         
         var stmt = sqlgen.select('idb_center.idb_account', '*');
-
+        
         stmt.sql += " LIMIT 100";
-
+        
         return stmt;
     };
     
@@ -36,20 +36,23 @@ module.exports = function () {
         pool.query(sql, function (err, rows, fields) {
             if (err) {
                 reject(err.toString());
+                pool.end();
             } else {
                 if (rows && (rows instanceof Array) && rows.length > 0) {
                     
                     rows.forEach(function (item, index) {
                         console.log('index: %d - Company Name: %s, User Name: %s', index, item.COMPANY_NAME, item.USERNAME);
                     });
-
+                    
                     resolve();
+                    pool.end();
                 } else {
                     reject('No records.');
+                    pool.end();
                 }
             }
         });
     });
-
+    
     return promise;
 }();

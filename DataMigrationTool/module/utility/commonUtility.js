@@ -74,8 +74,21 @@ module.exports = function () {
         
         return target;
     };
+    
+    var findFromArrayBy = function (array, id, prop) {
+        if (!array || !(array instanceof Array) || !id) return undefined;
+        
+        if (!prop) prop = "id";
+        
+        for (var i = 0; i < array.length; i++) {
+            if (array[i][prop] === id) return array[i];
+        }
+        
+        return undefined;
+    };
 
     return {
+        findFromArrayBy: findFromArrayBy,
         convertColToDb: convertColToDb,
         convertColToClient: convertColToClient,
         parseSql: parseSql

@@ -16,8 +16,8 @@ module.exports = function () {
     const config = require("../module/configs").httpClient,
           taskUtil = require("../module/utility/taskUtility");
     
-    var taskName = "crmCompanyList",
-        dependencyTask = path.join(__dirname, "depTask/crmCompanyDesc");
+    const taskName = "crmCompanyList",
+          dependencyTask = path.join(__dirname, "depTask/crmCompanyDesc");
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
    

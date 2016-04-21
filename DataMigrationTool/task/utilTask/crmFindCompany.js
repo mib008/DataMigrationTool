@@ -13,8 +13,9 @@ module.exports = function () {
     
     // ReSharper disable Es6Feature
     // ReSharper disable UndeclaredGlobalVariableUsing
-    const config = require("../../module/configs").httpClient,
-        taskUtil = require("../../module/utility/taskUtility");
+    const config    = require("../../module/configs").httpClient,
+        taskUtil    = require("../../module/utility/taskUtility"),
+        commonUtil  = require("../../module/utility/commonUtility");
     
     var taskName = "crmFindCompany",
         dependencyTask = path.join(__dirname, "depTask/crmCompanyDesc");
@@ -77,9 +78,18 @@ module.exports = function () {
         
         return promise;
     };
-
+    
     var findByAccountName = function (accountName) {
         function task(resolve, reject) {
+            
+            if (global.idMap[config.belongName.company].cache) {
+                var result = commonUtil.findFromArrayBy(global.idMap[config.belongName.company].cache, accountName, "accountName");
+                
+                if (result) {
+                    resolve({ records: [result] });
+                    return;
+                }
+            }
             
             var columns = global.idMap[config.belongName.company].fields.map(function (item) { return item.propertyname; });
             
@@ -104,6 +114,13 @@ module.exports = function () {
 
                     }
                     
+                    if (content && content.records && content.records.length > 0) {
+                        
+                        if (!global.idMap[config.belongName.company].cache) global.idMap[config.belongName.company].cache = [];
+                        
+                        global.idMap[config.belongName.company].cache = content.records;
+                    }
+                    
                     resolve(content);
                 });
             });
@@ -118,7 +135,9 @@ module.exports = function () {
         }
         
         // var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
+        // ReSharper disable UndeclaredGlobalVariableUsing
         var promise = new Promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
+        // ReSharper restore UndeclaredGlobalVariableUsing
         
         return promise;
     };
