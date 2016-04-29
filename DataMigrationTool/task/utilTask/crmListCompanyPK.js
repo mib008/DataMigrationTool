@@ -64,6 +64,10 @@ module.exports = function () {
 
                     }
                     
+                    if (content.error_code) {
+                        result = content;
+                    }
+                    
                     if (global.crmCompanyList) {
                         if (content.records && content.records instanceof Array && content.records.length > 0) {
                             content.records.forEach(function (item, index) {
@@ -86,11 +90,11 @@ module.exports = function () {
             req.on('error', function (e) {
                 console.error(e);
                 
-                reject(e);
+                result = e;
             });
             
             req.on('close', function (e) {
-
+                
                 if (result.totalSize) {
                     resolve(result);
                 } else {
@@ -154,13 +158,13 @@ module.exports = function () {
             }
         }
         
-        // ReSharper disable DuplicatingLocalDeclaration
-        var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.authInfo, dependencyTask, taskName, task));
-        // ReSharper restore DuplicatingLocalDeclaration
+        // ReSharper disable UndeclaredGlobalVariableUsing
+        var promise = new Promise(taskUtil.getDependencyPromiseResolver(global.authInfo, dependencyTask, taskName, task));
+        // ReSharper restore UndeclaredGlobalVariableUsing
         
         return promise;
     };
-    
+
     return {
         getCompany: getCompany,
         getCompanySync: getCompanySync

@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>DataMigrationTool</Name>
     <RootNamespace>DataMigrationTool</RootNamespace>
-    <ScriptArguments>crmCompanyPKList</ScriptArguments>
+    <ScriptArguments>syncCompanyDB2CRM</ScriptArguments>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -30,24 +30,17 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <!-- Specifies the directories which are ignored by NTVS for analysis -->
+    <AnalysisIgnoredDirectories>
+        node_modules;
+    </AnalysisIgnoredDirectories>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="dmt.js" />
-    <Compile Include="module\configs.js" />
-    <Compile Include="module\consts.js" />
-    <Compile Include="module\dbConn.js" />
-    <Compile Include="module\log4jsConfig.json" />
-    <Compile Include="module\logProvider.js" />
-    <Compile Include="module\utility\taskUtility.js" />
-    <Compile Include="module\utility\commonUtility.js" />
-    <Compile Include="module\utility\stringUtility.js" />
     <Compile Include="task\crmCompanyCreate.js" />
     <Compile Include="task\crmCompanyPKListSync.js" />
     <Compile Include="task\crmUserCreateMuti.js" />
-    <Compile Include="task\depTask\belongIdList.js" />
-    <Compile Include="task\depTask\crmCompanyDesc.js" />
-    <Compile Include="task\depTask\crmDepartDesc.js" />
-    <Compile Include="task\depTask\crmUserTypeDesc.js" />
-    <Compile Include="task\depTask\crmUserDesc.js" />
     <Compile Include="task\crmUserCreate.js" />
     <Compile Include="task\createUser.js" />
     <Compile Include="task\default.js" />
@@ -59,27 +52,17 @@
     <Compile Include="task\crmUserList.js" />
     <Compile Include="task\crmCompanyPKList.js" />
     <Compile Include="task\userList.js" />
-    <Compile Include="task\depTask\authPassword.js" />
     <Compile Include="task\task1.js" />
-    <Compile Include="task\depTask\authCode.js" />
     <Compile Include="task\getCompanyFromDB.js" />
     <Compile Include="task\task2.js" />
-    <Compile Include="task\utilTask\crmFindCompany.js" />
-    <Compile Include="task\utilTask\crmAddUser.js" />
-    <Compile Include="task\utilTask\crmAddCompany.js" />
-    <Compile Include="task\utilTask\databaseListCompany.js" />
-    <Compile Include="task\utilTask\crmListCompanyPK.js" />
-    <Compile Include="task\utilTask\listUser.js" />
-    <Content Include="module\config.json" />
+    <Compile Include="task\utilTask\crmUpdateCompanyBulk.js" />
+    <Compile Include="task\utilTask\crmAddCompanyBulk.js" />
+    <Compile Include="task\utilTask\crmListCompanyPKBulk.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="module\" />
-    <Folder Include="module\utility\" />
-    <Folder Include="log\" />
     <Folder Include="task\" />
-    <Folder Include="task\depTask\" />
     <Folder Include="task\utilTask\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

@@ -37,6 +37,10 @@ module.exports = function () {
 
                 }
                 
+                if (content.error_code) {
+                    reject(content);
+                }
+                
                 // 获取并存储BelongId
                 global.idMap = function () {
                     if (content && content.records && content.records instanceof Array && content.records.length > 0) {

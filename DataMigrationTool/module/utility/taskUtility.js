@@ -29,10 +29,12 @@ module.exports = function () {
             
             var doTask = function () {
                 task(function (msg) {
-                    if (msg.error_code) {
-                        doTaskReject(msg);
-                    } else {
-                        doTaskResolve(msg);
+                    if (msg) {
+                        if (msg.error_code) {
+                            doTaskReject(msg);
+                        } else {
+                            doTaskResolve(msg);
+                        }
                     }
                 }, function (msg) {
                     doTaskReject(msg);
