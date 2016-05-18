@@ -33,19 +33,30 @@
   <PropertyGroup>
     <!-- Specifies the directories which are ignored by NTVS for analysis -->
     <AnalysisIgnoredDirectories>
-        node_modules;
+        node_modules
     </AnalysisIgnoredDirectories>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="dmt.js" />
+    <Compile Include="module\configs.js" />
+    <Compile Include="module\consts.js" />
+    <Compile Include="module\dbConn.js" />
+    <Compile Include="module\httpsService.js" />
+    <Compile Include="module\logProvider.js" />
+    <Compile Include="module\utility\commonUtility.js" />
+    <Compile Include="module\utility\stringUtility.js" />
+    <Compile Include="module\utility\taskUtility.js" />
     <Compile Include="task\crmCompanyCreate.js" />
+    <Compile Include="task\bulkBatchList.js" />
     <Compile Include="task\crmCompanyPKListSync.js" />
     <Compile Include="task\crmUserCreateMuti.js" />
     <Compile Include="task\crmUserCreate.js" />
     <Compile Include="task\createUser.js" />
+    <Compile Include="task\depTask\bulkJobList.js" />
     <Compile Include="task\default.js" />
     <Compile Include="task\syncCompanyDB2CRM.js" />
     <Compile Include="task\syncDB2CRM.js" />
+    <Compile Include="task\testCrmTask.js" />
     <Compile Include="task\testGetAccountData.js" />
     <Compile Include="task\userInfo.js" />
     <Compile Include="task\crmCompanyList.js" />
@@ -55,14 +66,34 @@
     <Compile Include="task\task1.js" />
     <Compile Include="task\getCompanyFromDB.js" />
     <Compile Include="task\task2.js" />
+    <Compile Include="task\utilTask\crmBulk.js" />
+    <Compile Include="task\utilTask\crmDeleteCompanyBulk.js" />
     <Compile Include="task\utilTask\crmUpdateCompanyBulk.js" />
     <Compile Include="task\utilTask\crmAddCompanyBulk.js" />
     <Compile Include="task\utilTask\crmListCompanyPKBulk.js" />
+    <Content Include="jsonData\belongId.json" />
+    <Content Include="jsonData\crmAddCompanyBulk.json" />
+    <Content Include="jsonData\crmCompanyDesc.json" />
+    <Content Include="jsonData\crmCompanyList.json" />
+    <Content Include="jsonData\crmCompanyListOne.json" />
+    <Content Include="jsonData\crmUserDesc.json" />
+    <Content Include="jsonData\crmUserList.json" />
+    <Content Include="jsonData\departDesc.json" />
+    <Content Include="jsonData\JSON1.json" />
+    <Content Include="jsonData\crmBulk.json" />
+    <Content Include="jsonData\JSON2.json" />
+    <Content Include="jsonData\userList.json" />
+    <Content Include="module\config.json" />
+    <Content Include="module\log4jsConfig.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="jsonData\" />
+    <Folder Include="module\" />
+    <Folder Include="module\utility\" />
     <Folder Include="task\" />
+    <Folder Include="task\depTask\" />
     <Folder Include="task\utilTask\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

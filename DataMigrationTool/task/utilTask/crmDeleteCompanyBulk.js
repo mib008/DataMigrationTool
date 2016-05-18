@@ -16,97 +16,47 @@ module.exports = function () {
     const config    = require("../../module/configs").httpClient,
         commonUtil  = require("../../module/utility/commonUtility");
     
-    var taskName = "utilTask/crmUpdateCompanyBulk",
+    var taskName = "utilTask/crmDeleteCompanyBulk",
         crmCreateBulkTask = path.join(__dirname, "crmCreateBulkTask");
     // ReSharper restore UndeclaredGlobalVariableUsing
     // ReSharper restore Es6Feature
     
-    var testUser1 = {
-        accountName: "testCompany2",
-        ownerId: "480603",
-        dimDepart: "266930",
-        createdBy: "",
-        createdAt: "",
-        updatedBy: "",
-        updatedAt: ""
-    };
-    
     function getTargetData(company) {
         var target = {};
         
-        var owner = commonUtil.findFromArrayBy(global.crmUserList, company.ownerName, "name");
-        
-        if (owner) {
-            target.ownerId = owner.id;
-            target.dimDepart = owner.departId;
+        if (company.hasOwnProperty("id")) {
+            target.id = company.id;
         } else {
-            throw util.format("Task: %s, Owner name: %s not found. company: %s", taskName, company.ownerName, JSON.stringify(company));
-        }
-
-        var crmObj = commonUtil.findFromArrayBy(global.crmCompanyList, company.dbcVarchar1, "dbcVarchar1");
-        
-        if (crmObj) {
-            target.id = crmObj.id;
-        } else {
-            throw util.format("Task: %s, CRM dbcVarchar1(company uid): %s not found. company: %s", taskName, company.dbcVarchar1, JSON.stringify(company));
-        }
-
-        var requireList = [];
-        global.idMap[config.belongName.company].fields.forEach(function (item, index) {
-            if (!item.enabled || !item.createable) return;
-            
-            if (item.required && !company[item.propertyname]) {
-                if (item.propertyname !== "ownerId" && item.propertyname !== "dimDepart" && item.propertyname !== "id") {
-                    requireList.push(item);
-                    return;
-                } else {
-                    return;
-                }
-            }
-            
-            target[item.propertyname] = company[item.propertyname];
-        });
-        
-        if (requireList.length > 0) {
-            throw util.format("Required property must be specified: %s", requireList.map(function (x) { return x.propertyname; }).join('\r\n'));
+            throw util.format("Task: %s, company id not specified: %s", taskName, JSON.stringify(company));
         }
         
         return target;
     };
     
-    var updateCompany = function (companys) {
+    var deleteCompany = function (companys) {
         if (!companys) return undefined;
         
         var data = [];
-
+        
         companys.forEach(function (item, index) {
             try {
                 data.push(getTargetData(item));
             } catch (e) {
                 console.warn(e);
-            } 
+            }
             
         });
         
+        // ReSharper disable UndeclaredGlobalVariableUsing
         function task(resolve, reject) {
-            require(crmCreateBulkTask).createTask({ object: config.belongName.company, operation: "update"}).then(function (res) {
+            require(crmCreateBulkTask).createTask({ object: config.belongName.company, operation: "delete" }).then(function (res) {
                 var result = undefined;
-                
-                var columnSet = new Set(global.idMap[config.belongName.company].fields.map(function (item) {
-                    if (item.unique) return item.propertyname;
-                    else return undefined;
-                }));
-                
-                columnSet.delete(undefined);
-                
-                var columns = Array.from(columnSet);
-                columns.push("dbcVarchar1");
                 
                 data = {
                     jobId: res.id, 
                     datas: data
                 };
-
+                
                 console.info("utilTask/crmUpdateCompanyBulk data:%s", JSON.stringify(data));
                 
                 var option = url.parse(config.crmApi.bulkRun.url);
@@ -126,7 +76,7 @@ module.exports = function () {
                         } catch (e) {
 
                         }
-
+                        
                         result = content;
                     });
                 });
@@ -150,14 +100,13 @@ module.exports = function () {
                 
                 req.end();
             }, reject);
-        }
+        };
 
-        // ReSharper disable UndeclaredGlobalVariableUsing
         return new Promise(task);
         // ReSharper restore UndeclaredGlobalVariableUsing
     };
     
     return {
-        updateCompany: updateCompany
+        deleteCompany: deleteCompany
     };
 }();

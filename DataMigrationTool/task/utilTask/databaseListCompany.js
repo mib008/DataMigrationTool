@@ -27,10 +27,10 @@ module.exports = function () {
             pool.query(sql, function (err, rows, fields) {
                 if (err) {
                     reject(err.toString());
-                    pool.end();
+                    // pool.end();
                 } else {
                     resolve({ rows: rows, fields: fields });
-                    pool.end();
+                    // pool.end();
                 }
             });
         });

@@ -29,6 +29,7 @@ module.exports = function () {
         columnSet.delete(undefined);
         
         var columns = Array.from(columnSet);
+        // 机构代码
         columns.push("dbcVarchar1");
         
         var data = {

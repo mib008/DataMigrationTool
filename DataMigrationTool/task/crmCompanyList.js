@@ -61,7 +61,7 @@ module.exports = function () {
             
             reject(e);
         });
-    }
+    };
     
     var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
 
