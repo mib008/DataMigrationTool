@@ -13,9 +13,10 @@ module.exports = function () {
     
     // ReSharper disable Es6Feature
     // ReSharper disable UndeclaredGlobalVariableUsing
-    const config    = require("../../module/configs").httpClient,
-        taskUtil    = require("../../module/utility/taskUtility"),
-        commonUtil  = require("../../module/utility/commonUtility");
+    const config        = require("../../module/configs").httpClient,
+          httpsService  = require("../../module/httpsService"),
+          taskUtil      = require("../../module/utility/taskUtility"),
+          commonUtil    = require("../../module/utility/commonUtility");
     
     var taskName = "crmFindCompany",
         dependencyTask = path.join(__dirname, "depTask/crmCompanyDesc");
@@ -34,16 +35,21 @@ module.exports = function () {
     
     function getTargetData(company) {
         var target = {};
-        
-        var owner = commonUtil.findFromArrayBy(global.crmUserList, company.ownerName, "name");
-        
-        if (owner) {
-            target.ownerId = owner.id;
-            target.dimDepart = owner.departId;
+
+        if (company.ownerId) {
+            target.ownerId = company.ownerId;
+            target.dimDepart = company.departId;
         } else {
-            throw util.format("Owner name: %s not found.", company.ownerName);
+            var owner = commonUtil.findFromArrayBy(global.crmUserList, company.ownerName, "name");
+
+            if (owner) {
+                target.ownerId = owner.id;
+                target.dimDepart = owner.departId;
+            } else {
+                throw util.format("Owner name: %s not found.", company.ownerName);
+            }
         }
-        
+
         var requireList = [];
         global.idMap[config.belongName.company].fields.forEach(function (item, index) {
             if (!item.enabled || !item.createable) return;
@@ -67,7 +73,7 @@ module.exports = function () {
         return target;
     };
     
-    function addOne(company, converted) {
+    function addOne_bak(company, converted) {
         function task(resolve, reject) {
             
             var data = undefined;
@@ -127,6 +133,38 @@ module.exports = function () {
         
         return promise;
     };
+    
+    function addOne(company, converted) {
+        
+        var data = undefined;
+        
+        if (converted) {
+            data = company;
+        } else {
+            try {
+                data = getTargetData(company);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        if (!data) {
+            console.log("Create insert data failed.");
+            return undefined;
+        }
+        
+        data = {
+            belongId: global.idMap[config.belongName.company].belongId, 
+            record: data
+        };
+
+        var task = httpsService.postTask(config.crmApi.crmCompanyCreate, data, function(content) {});
+        
+        var promise = Q.promise(taskUtil.getDependencyPromiseResolver(global.idMap, dependencyTask, taskName, task));
+        
+        return promise;
+    };
+
     
     function addMuti(companys) {
         function task(resolve, reject) {

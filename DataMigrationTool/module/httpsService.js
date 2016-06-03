@@ -69,10 +69,15 @@ module.exports = function () {
             
             var option = url.parse(urlInfo.url);
             option.method = urlInfo.method;
-            option.headers = {
-                Authorization: global.authInfo.access_token
-            };
-            
+
+            if (urlInfo.headers) {
+                option.headers = urlInfo.headers;
+            } else {
+                option.headers = {};
+            }
+
+            option.headers.Authorization = global.authInfo.access_token;
+
             var req = https.request(option, function (res) {
                 var content = "";
                 res.on('data', function (chunk) {

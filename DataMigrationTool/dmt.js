@@ -1,13 +1,11 @@
 ﻿// ReSharper disable UseOfImplicitGlobalInFunctionScope
 
 // ReSharper disable Es6Feature
-const path = require("path"),
-    util = require('util'),
-    colors = require("colors");
+const path      = require("path"),
+      util      = require('util'),
+      colors    = require("colors"),
+      domain    = require('domain');
 // ReSharper restore Es6Feature
-
-
-
 
 
 //var taskName = process.argv[2];
@@ -26,6 +24,14 @@ const path = require("path"),
 //    // process.exit(1);
 //}); 
 
+process.on('uncaughtException', function (err) {
+    console.log(err);
+});
+
+process.on('unhandledRejection',  function(reason, p) {
+console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+// application specific logging, throwing an error, or other logic here
+});
 
 var taskList = [];
 

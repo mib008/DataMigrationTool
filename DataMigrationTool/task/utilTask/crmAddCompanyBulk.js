@@ -34,14 +34,19 @@ module.exports = function () {
     
     function getTargetData(company) {
         var target = {};
-        
-        var owner = commonUtil.findFromArrayBy(global.crmUserList, company.ownerName, "name");
-        
-        if (owner) {
-            target.ownerId = owner.id;
-            target.dimDepart = owner.departId;
+
+        if (company.ownerId) {
+            target.ownerId = company.ownerId;
+            target.dimDepart = company.departId;
         } else {
-            throw util.format("Task: %s, Owner name: %s not found. company: %s", taskName, company.ownerName, JSON.stringify(company));
+            var owner = commonUtil.findFromArrayBy(global.crmUserList, company.ownerName, "name");
+            
+            if (owner) {
+                target.ownerId = owner.id;
+                target.dimDepart = owner.departId;
+            } else {
+                throw util.format("Task: %s, Owner name: %s not found. company: %s", taskName, company.ownerName, JSON.stringify(company));
+            }
         }
         
         var requireList = [];
@@ -94,8 +99,8 @@ module.exports = function () {
                 var option = url.parse(config.crmApi.bulkRun.url);
                 option.method = config.crmApi.bulkRun.method;
                 option.headers = {
-                    Authorization: global.authInfo.access_token,
-                    "Content-Type": "application/json"
+                    Authorization: global.authInfo.access_token
+                    // "content-type": "x-www-form-urlencoded"
                 };
                 
                 var req = https.request(option, function (res) {
